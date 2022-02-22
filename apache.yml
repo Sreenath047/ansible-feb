@@ -1,0 +1,23 @@
+- hosts: 172.31.94.111
+  become: True
+  tasks:
+    - name: install apache server
+      yum:
+        name: httpd
+        state: present
+    - name: copy website files on to apache
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+      notify:
+        - restart apache
+    - name: start and enable apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+  handlers:
+    - name: restart apache
+      service:
+        name: httpd
+        state: restarted
